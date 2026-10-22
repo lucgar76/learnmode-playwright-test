@@ -105,44 +105,41 @@ class TestUpdateProfile:
 
     # ── Targeted boundary tests ──────────────────────────────────────────────
 
+    def _result_for(self, page: Page, description: str) -> str:
+        """Replay the scripted steps up to the named instruction."""
+        profile = UpdateProfilePage(page)
+        profile.open()
+        for step_data in PROFILE_STEPS:
+            profile.submit_step(
+                step_data["nickname"],
+                step_data["first_name"],
+                step_data["last_name"],
+            )
+            if step_data["description"] == description:
+                return profile.get_result()
+            profile.click_clear()
+        raise AssertionError(f"profile step not found: {description}")
+
     def test_valid_profile_accepted(self, page: Page):
-        """All three fields correctly filled returns 'Your profile updated'."""
-        profile = UpdateProfilePage(page)
-        profile.open()
-        profile.submit_step("skyline7", "Michael", "Henderson")
-        assert profile.get_result() == "Your profile updated"
+        """A complete valid profile returns 'Your profile updated'."""
+        assert self._result_for(page, "valid profile") == "Your profile updated"
 
-    def test_missing_nickname_rejected(self, page: Page):
-        """Submission without a nickname is rejected."""
-        profile = UpdateProfilePage(page)
-        profile.open()
-        profile.submit_step("", "Michael", "Henderson")
-        assert profile.get_result() == "Invalid Profile"
+    def test_values_shorter_than_minimum_rejected(self, page: Page):
+        """Values shorter than the minimum length are rejected."""
+        assert self._result_for(page, "shorter than the minimum length") == "User input error"
 
-    def test_missing_first_name_rejected(self, page: Page):
-        """Submission without a first name is rejected."""
-        profile = UpdateProfilePage(page)
-        profile.open()
-        profile.submit_step("skyline7", "", "Henderson")
-        assert profile.get_result() == "Invalid Profile"
+    def test_values_longer_than_maximum_rejected(self, page: Page):
+        """Values longer than the maximum length are rejected."""
+        assert self._result_for(page, "longer than the maximum length") == "User input error"
 
-    def test_missing_last_name_rejected(self, page: Page):
-        """Submission without a last name is rejected."""
-        profile = UpdateProfilePage(page)
-        profile.open()
-        profile.submit_step("skyline7", "Michael", "")
-        assert profile.get_result() == "Invalid Profile"
+    def test_disallowed_characters_rejected(self, page: Page):
+        """Disallowed characters in the profile fields are rejected."""
+        assert self._result_for(page, "disallowed characters in every field") == "User input error"
 
-    def test_nickname_with_spaces_rejected(self, page: Page):
-        """Nickname containing spaces is rejected."""
-        profile = UpdateProfilePage(page)
-        profile.open()
-        profile.submit_step("sky line 7", "Michael", "Henderson")
-        assert profile.get_result() == "Invalid Profile"
+    def test_nickname_with_disallowed_characters_rejected(self, page: Page):
+        """A nickname made only of disallowed characters is rejected."""
+        assert self._result_for(page, "disallowed characters in the nickname") == "User input error"
 
     def test_all_fields_empty_rejected(self, page: Page):
-        """Submitting all empty fields is rejected."""
-        profile = UpdateProfilePage(page)
-        profile.open()
-        profile.submit_step("", "", "")
-        assert profile.get_result() == "Invalid Profile"
+        """Submitting every field empty is rejected."""
+        assert self._result_for(page, "all fields empty") == "User input error"

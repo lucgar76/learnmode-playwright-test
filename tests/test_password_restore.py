@@ -90,44 +90,37 @@ class TestPasswordRestore:
 
     # ── Targeted boundary tests ──────────────────────────────────────────────
 
+    def _result_for(self, page: Page, description: str) -> str:
+        """Replay the scripted steps up to the named instruction."""
+        pw = PasswordRestorePage(page)
+        pw.open()
+        for step_data in PASSWORD_STEPS:
+            pw.submit_step(step_data["password"])
+            if step_data["description"] == description:
+                return pw.get_result()
+            pw.click_clear()
+        raise AssertionError(f"password step not found: {description}")
+
     def test_valid_password_accepted(self, page: Page):
-        """A password meeting all criteria returns 'Valid Password'."""
-        pw = PasswordRestorePage(page)
-        pw.open()
-        pw.submit_step("P@ssw0rD")
-        assert pw.get_result() == "Valid Password"
+        """A password meeting every requirement returns 'Valid password'."""
+        assert self._result_for(page, "meets all requirements") == "Valid password"
 
-    def test_missing_uppercase_rejected(self, page: Page):
-        """Password without an uppercase letter is rejected."""
-        pw = PasswordRestorePage(page)
-        pw.open()
-        pw.submit_step("p@ssw0rd")
-        assert pw.get_result() == "Invalid Password"
+    def test_requirements_not_met_rejected(self, page: Page):
+        """A password that misses a requirement is rejected."""
+        assert self._result_for(page, "does not meet all requirements") == "Invalid password"
 
-    def test_missing_digit_rejected(self, page: Page):
-        """Password without a digit is rejected."""
-        pw = PasswordRestorePage(page)
-        pw.open()
-        pw.submit_step("P@ssword")
-        assert pw.get_result() == "Invalid Password"
-
-    def test_missing_special_char_rejected(self, page: Page):
-        """Password without a special character is rejected."""
-        pw = PasswordRestorePage(page)
-        pw.open()
-        pw.submit_step("Passw0rd")
-        assert pw.get_result() == "Invalid Password"
+    def test_same_as_saved_password_rejected(self, page: Page):
+        """Reusing the saved password is rejected."""
+        assert self._result_for(page, "same as the saved password") == "Invalid password"
 
     def test_too_short_rejected(self, page: Page):
-        """Password shorter than 8 characters is rejected."""
-        pw = PasswordRestorePage(page)
-        pw.open()
-        pw.submit_step("P@s1")
-        assert pw.get_result() == "Invalid Password"
+        """A password shorter than 5 characters is rejected."""
+        assert self._result_for(page, "shorter than 5 characters") == "Invalid password"
+
+    def test_too_long_rejected(self, page: Page):
+        """A password longer than 15 characters is rejected."""
+        assert self._result_for(page, "longer than 15 characters") == "Invalid password"
 
     def test_empty_password_rejected(self, page: Page):
-        """Empty password submission is rejected."""
-        pw = PasswordRestorePage(page)
-        pw.open()
-        pw.submit_step("")
-        assert pw.get_result() == "Invalid Password"
+        """An empty password is rejected."""
+        assert self._result_for(page, "empty password") == "Invalid password"

@@ -1,17 +1,5 @@
-# Step-by-step test data for Challenge #1.4: Update Profile
-# Each dict maps to one sequential instruction shown in the app.
-# Step 1 is confirmed from the live app. Steps 2–6 follow standard
-# profile validation scripted-testing patterns covering:
-#   - Valid profile (all fields filled correctly)
-#   - Missing required fields (nickname, first name, last name)
-#   - Invalid nickname format (spaces, special characters)
-#   - Empty submission
-# Run the challenge manually to confirm or adjust steps 2–6 if they differ.
-#
-# Common basic profile criteria tested by this form:
-#   ✓ Nickname: required, alphanumeric, no spaces
-#   ✓ First Name: required, letters only
-#   ✓ Last Name: required, letters only
+# Step-by-step test data for Challenge #1.4: Update Profile.
+# Values and expected results are the instructions shown by the live challenge.
 
 PROFILE_STEPS = [
     {
@@ -20,46 +8,46 @@ PROFILE_STEPS = [
         "first_name": "Michael",
         "last_name": "Henderson",
         "expected": "Your profile updated",
-        "description": "valid profile — all fields correctly filled",
+        "description": "valid profile",
     },
     {
         "step": 2,
-        "nickname": "",
-        "first_name": "Michael",
-        "last_name": "Henderson",
-        "expected": "Invalid Profile",
-        "description": "missing nickname",
+        "nickname": "k_3",
+        "first_name": "J",
+        "last_name": "Z",
+        "expected": "User input error",
+        "description": "shorter than the minimum length",
     },
     {
         "step": 3,
-        "nickname": "skyline7",
-        "first_name": "",
-        "last_name": "Henderson",
-        "expected": "Invalid Profile",
-        "description": "missing first name",
+        "nickname": "longnick9_",
+        "first_name": "MaximilianaElizabethMontgomery",
+        "last_name": "AlexanderHamiltonJeffersonSmith",
+        "expected": "User input error",
+        "description": "longer than the maximum length",
     },
     {
         "step": 4,
-        "nickname": "skyline7",
-        "first_name": "Michael",
+        "nickname": "",
+        "first_name": "",
         "last_name": "",
-        "expected": "Invalid Profile",
-        "description": "missing last name",
+        "expected": "User input error",
+        "description": "all fields empty",
     },
     {
         "step": 5,
-        "nickname": "sky line 7",
-        "first_name": "Michael",
-        "last_name": "Henderson",
-        "expected": "Invalid Profile",
-        "description": "nickname contains spaces",
+        "nickname": "123-AA",
+        "first_name": "X Æ A-12",
+        "last_name": "X Æ A-12",
+        "expected": "User input error",
+        "description": "disallowed characters in every field",
     },
     {
         "step": 6,
-        "nickname": "nova42",
-        "first_name": "Sarah",
-        "last_name": "Collins",
-        "expected": "Your profile updated",
-        "description": "valid profile with different user data",
+        "nickname": "@@@@@",
+        "first_name": "Christopher",
+        "last_name": "Williams",
+        "expected": "User input error",
+        "description": "disallowed characters in the nickname",
     },
 ]

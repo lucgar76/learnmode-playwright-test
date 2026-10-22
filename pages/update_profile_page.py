@@ -8,17 +8,17 @@ class UpdateProfilePage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         # ── Form inputs ──────────────────────────────────────────────────────
-        self.nickname = page.get_by_label("Nickname")
-        self.first_name = page.get_by_label("First Name")
-        self.last_name = page.get_by_label("Last Name")
+        self.nickname = page.get_by_placeholder("Nickname")
+        self.first_name = page.get_by_placeholder("First name")
+        self.last_name = page.get_by_placeholder("Last name")
 
         # ── Buttons ──────────────────────────────────────────────────────────
         self.submit_btn = page.get_by_role("button", name="Submit!")
-        self.clear_btn = page.get_by_role("button", name="Clear Form")
-        self.start_over_btn = page.get_by_role("button", name="Start Over")
+        self.clear_btn = page.get_by_role("button", name="Clear form")
+        self.start_over_btn = page.get_by_role("button", name="Start over")
 
         # ── Output & instruction ─────────────────────────────────────────────
-        self.result = page.locator("p", has_text="Result:")
+        self.result = page.get_by_test_id("result")
         self.instruction_text = page.locator("ol li").first
         self.progress = page.locator("text=out of")
 
@@ -34,19 +34,18 @@ class UpdateProfilePage(BasePage):
         self.fill(self.last_name, last_name)
 
     def click_submit(self):
+        self.prepare_result_wait()
         self.click(self.submit_btn)
 
     def click_clear(self):
-        self.click(self.clear_btn)
+        self.click_if_enabled(self.clear_btn)
 
     def click_start_over(self):
-        self.click(self.start_over_btn)
+        self.confirm_start_over(self.start_over_btn)
 
     def get_result(self) -> str:
         """Return the validation result text shown after submission."""
-        self.wait_for_element(self.result)
-        raw = self.result.inner_text().strip()
-        return raw.replace("Result:", "").strip()
+        return self.read_result_value()
 
     def get_progress(self) -> str:
         """Return the progress counter text e.g. '2 out of 6'."""

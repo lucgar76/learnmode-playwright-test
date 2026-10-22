@@ -1,8 +1,5 @@
-# Step-by-step test data for Challenge #1.1: Number Addition
-# Each dict maps to one sequential instruction shown in the app.
-# Step 1 is confirmed from the live app. Steps 2–6 follow standard
-# scripted-testing patterns (positive, zero, negative, decimal, large).
-# Run the challenge manually to confirm or adjust steps 2–6 if they differ.
+# Step-by-step test data for Challenge #1.1: Number Addition.
+# Values and expected results are the instructions shown by the live challenge.
 
 ADDER_STEPS = [
     {
@@ -14,37 +11,37 @@ ADDER_STEPS = [
     },
     {
         "step": 2,
-        "first": "0",
-        "second": "0",
-        "expected": "0",
-        "description": "both inputs are zero",
+        "first": "-2",
+        "second": "4",
+        "expected": "2",
+        "description": "one number is negative",
     },
     {
         "step": 3,
-        "first": "-1",
-        "second": "1",
-        "expected": "0",
-        "description": "negative plus positive equals zero",
+        "first": "1.5",
+        "second": "2.5",
+        "expected": "4.0",
+        "description": "decimal fractions",
     },
     {
         "step": 4,
-        "first": "10",
-        "second": "20",
-        "expected": "30",
-        "description": "two-digit positive numbers",
+        "first": "abc",
+        "second": "1",
+        "expected": "User input error",
+        "description": "non-numeric first number",
     },
     {
         "step": 5,
-        "first": "-5",
-        "second": "-3",
-        "expected": "-8",
-        "description": "negative plus negative",
+        "first": "",
+        "second": "",
+        "expected": "User input error",
+        "description": "both fields blank",
     },
     {
         "step": 6,
-        "first": "1.5",
-        "second": "2.5",
-        "expected": "4",
-        "description": "decimal numbers",
+        "first": "10000000000",
+        "second": "1",
+        "expected": "Application error",
+        "description": "first number is too large",
     },
 ]

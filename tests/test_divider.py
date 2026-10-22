@@ -95,16 +95,15 @@ class TestDivider:
         assert "0" in progress
 
     def test_divide_by_zero_shows_error(self, page: Page):
-        """
-        Dividing by zero should display an error message rather than a numeric result.
-        This is a key boundary condition for any division form.
-        """
+        """The divide-by-zero instruction reports an application error."""
         divider = DividerPage(page)
         divider.open()
 
-        divider.submit_step("10", "0")
-        result = divider.get_result()
+        for step_data in DIVIDER_STEPS:
+            divider.submit_step(step_data["first"], step_data["second"])
+            if step_data["description"] == "divide by zero":
+                assert divider.get_result() == step_data["expected"]
+                return
+            divider.click_clear()
 
-        assert result != "Infinity" and result != "", (
-            f"Expected an error indicator for division by zero, got: '{result}'"
-        )
+        raise AssertionError("divide by zero step was not found")

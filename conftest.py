@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from playwright.sync_api import Page
 
@@ -6,10 +8,14 @@ BASE_URL = "https://bugeater.web.app"
 
 @pytest.fixture(scope="session")
 def browser_type_launch_args():
-    """Headed mode with slow_mo so steps are visible during test runs."""
+    """Headed mode with slow_mo so steps are visible during test runs.
+
+    Set PW_HEADLESS=1 to run without a browser window.
+    """
+    headless = os.environ.get("PW_HEADLESS", "0") == "1"
     return {
-        "headless": False,
-        "slow_mo": 300,
+        "headless": headless,
+        "slow_mo": 0 if headless else 300,
     }
 
 
