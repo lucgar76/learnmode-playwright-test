@@ -1,87 +1,71 @@
-# Step-by-step test data for Challenge #1.3: Password Restore
-# Each dict maps to one sequential instruction shown in the app.
-# Step 1 is confirmed from the live app. Steps 2–11 follow standard
-# password validation scripted-testing patterns covering:
-#   - Valid passwords (all criteria met)
-#   - Missing uppercase / lowercase / digit / special character
-#   - Too short (< 8 chars)
-#   - Empty input
-#   - Whitespace only
-#   - Boundary: exactly 8 chars meeting all criteria
-# Run the challenge manually to confirm or adjust steps 2–11 if they differ.
-#
-# Common basic password criteria tested by this form:
-#   ✓ At least 8 characters
-#   ✓ At least one uppercase letter (A–Z)
-#   ✓ At least one lowercase letter (a–z)
-#   ✓ At least one digit (0–9)
-#   ✓ At least one special character (!@#$%^&* etc.)
+# Step-by-step test data for Challenge #1.3: Password Restore.
+# Values and expected results are the instructions shown by the live challenge.
 
 PASSWORD_STEPS = [
     {
         "step": 1,
         "password": "P@ssw0rD",
-        "expected": "Valid Password",
-        "description": "valid password meeting all criteria",
+        "expected": "Valid password",
+        "description": "meets all requirements",
     },
     {
         "step": 2,
-        "password": "password1!",
-        "expected": "Invalid Password",
-        "description": "missing uppercase letter",
+        "password": "hElloW0rld",
+        "expected": "Invalid password",
+        "description": "does not meet all requirements",
     },
     {
         "step": 3,
-        "password": "PASSWORD1!",
-        "expected": "Invalid Password",
-        "description": "missing lowercase letter",
+        "password": "Passw0rd!7",
+        "expected": "Invalid password",
+        "description": "same as the saved password",
     },
     {
         "step": 4,
-        "password": "P@ssword",
-        "expected": "Invalid Password",
-        "description": "missing digit",
-    },
-    {
-        "step": 5,
-        "password": "Passw0rd",
-        "expected": "Invalid Password",
-        "description": "missing special character",
-    },
-    {
-        "step": 6,
-        "password": "P@s1",
-        "expected": "Invalid Password",
-        "description": "too short (less than 8 characters)",
-    },
-    {
-        "step": 7,
         "password": "",
-        "expected": "Invalid Password",
+        "expected": "Invalid password",
         "description": "empty password",
     },
     {
+        "step": 5,
+        "password": "Mo7%",
+        "expected": "Invalid password",
+        "description": "shorter than 5 characters",
+    },
+    {
+        "step": 6,
+        "password": "asdfghjklpoiuytrewq",
+        "expected": "Invalid password",
+        "description": "longer than 15 characters",
+    },
+    {
+        "step": 7,
+        "password": "ONLYCAPITAL",
+        "expected": "Invalid password",
+        "description": "uppercase letters only",
+    },
+    {
         "step": 8,
-        "password": "        ",
-        "expected": "Invalid Password",
-        "description": "whitespace only",
+        "password": "onlylower",
+        "expected": "Invalid password",
+        "description": "lowercase letters only",
     },
     {
         "step": 9,
-        "password": "Ab1!Ab1!",
-        "expected": "Valid Password",
-        "description": "exactly 8 characters meeting all criteria",
+        "password": "001122",
+        "expected": "Invalid password",
+        "description": "digits only",
     },
     {
         "step": 10,
-        "password": "12345678",
-        "expected": "Invalid Password",
-        "description": "digits only, no letters or special character",
+        "password": "@@@@@",
+        "expected": "Invalid password",
+        "description": "special characters only",
     },
     {
         "step": 11,
-        "password": "Str0ng!P@ssw0rd",
-        "expected": "Valid Password",
-        "description": "long valid password with multiple special chars",
+        "password": "Κωδικός",
+        "expected": "Invalid password",
+        "description": "disallowed characters",
     },
 ]

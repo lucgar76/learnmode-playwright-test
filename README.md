@@ -132,7 +132,7 @@ pytest tests/test_adder.py -k "step_1" -v
 
 ## Test Data
 
-Step-by-step input/expected data lives in the `data/` folder. Step 1 of each challenge is confirmed from the live application. Steps 2 onwards follow standard scripted-testing patterns — run each challenge manually in the browser to verify and adjust expected values if needed.
+Step-by-step input/expected data lives in the `data/` folder. Every step matches the instruction currently shown by the live Learn Mode challenge.
 
 ### Updating a step
 
@@ -185,3 +185,77 @@ All interactions use `locator.wait_for(state="visible", timeout=10_000)` before 
 |--------|-------|
 | `learn_mode` | All Learn Mode challenge tests |
 | `smoke` | Fast link-visibility checks on the list page |
+| `kafka` | Kafka message broker validation tests |
+
+---
+
+## Kafka Integration
+
+Basic message broker validations using [Apache Kafka](https://kafka.apache.org/), running locally via Homebrew.
+
+### Prerequisites
+
+#### 1. Java 17
+
+Kafka requires Java 17. Install it and set it as the active runtime:
+
+```bash
+brew install openjdk@17
+```
+
+Add to `~/.zshrc`:
+
+```bash
+export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
+export PATH=$JAVA_HOME/bin:$PATH
+```
+
+Then reload: `source ~/.zshrc`
+
+#### 2. Kafka
+
+```bash
+brew install kafka
+```
+
+#### 3. Start Kafka services
+
+```bash
+brew services start zookeeper
+brew services start kafka
+```
+
+Verify both are running:
+
+```bash
+brew services list | grep -E "kafka|zookeeper"
+```
+
+### Running Kafka Tests
+
+Make sure Kafka is running, then:
+
+```bash
+pytest tests/test_kafka.py -v -m kafka
+```
+
+### Kafka Tests Covered
+
+| Test | What it validates |
+|------|-------------------|
+| `test_producer_connects_and_sends` | Producer connects and receives a valid partition + offset back |
+| `test_consumer_receives_message` | A sent message is received by the consumer |
+| `test_message_content_is_preserved` | Received bytes match exactly what was sent |
+| `test_multiple_messages_are_all_delivered` | A batch of 5 messages all arrive |
+| `test_message_order_is_preserved` | Messages arrive in the same order they were sent |
+
+### Topic
+
+All Kafka tests use the topic `test-learnmode` (partition 0), which is auto-created on the first test run.
+
+### Stopping Kafka
+
+```bash
+brew services stop kafka
+brew services stop zookeeper
+```
